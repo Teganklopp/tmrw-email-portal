@@ -50,6 +50,24 @@ h1{font-size:25px;font-weight:700;line-height:1.22;letter-spacing:-0.01em;margin
 .read b{font-weight:700}
 
 .sec-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin:34px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.board{margin-bottom:26px}
+.board-h{font-size:13px;font-weight:700;margin-bottom:4px}
+.board-note{font-size:12px;color:var(--ink-3);margin-bottom:12px;line-height:1.5}
+.board-sub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-3);margin:14px 0 8px}
+.lrow{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--bg);padding:11px 14px;margin-bottom:7px}
+.lrank{font-size:13px;font-weight:700;color:var(--ink-3);width:22px;flex-shrink:0;text-align:center}
+.lname{flex:1;font-size:14px;font-weight:600;line-height:1.3;min-width:0}
+.lname .lt{font-size:11px;font-weight:400;color:var(--ink-3);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lname .jtag{color:var(--ink-3);font-weight:400}
+.lbar-wrap{flex:1.2;display:flex;align-items:center;gap:10px;min-width:0}
+.lbar-track{flex:1;height:18px;background:var(--bg-3);overflow:hidden;min-width:40px}
+.lbar-fill{height:100%;background:var(--ink);min-width:2px}
+.lbar-fill.alt{background:var(--ink-3)}
+.lval{font-size:16px;font-weight:700;white-space:nowrap;flex-shrink:0;width:62px;text-align:right}
+.lval .lvs{font-size:10px;font-weight:400;color:var(--ink-3);display:block;margin-top:1px}
+.tag-fn{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:var(--bg-3);color:var(--ink-2);border:1px solid var(--line);padding:2px 6px;margin-left:6px;white-space:nowrap}
+.tag-real{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:var(--ink);color:var(--bg);padding:2px 6px;margin-left:6px;white-space:nowrap}
+@media(max-width:600px){ .lbar-wrap{display:none} .lname{flex:2} }
 
 .rec{border:1px solid var(--line);background:var(--bg);padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start}
 .rec-pri{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:4px 8px;white-space:nowrap;flex-shrink:0;margin-top:2px}
@@ -99,6 +117,9 @@ h1{font-size:25px;font-weight:700;line-height:1.22;letter-spacing:-0.01em;margin
 .move-empty{border:1px dashed var(--line);background:var(--bg-2);padding:28px 20px;text-align:center;color:var(--ink-2);font-size:14px;line-height:1.7}
 .move-banner{border-left:3px solid var(--ink);background:var(--bg-2);padding:14px 16px;margin:6px 0 4px;font-size:14px;line-height:1.6}
 .move-banner b{font-weight:700}
+.move-warn{border:1px solid var(--ink);background:var(--bg);padding:13px 16px;margin:6px 0 8px;font-size:13px;line-height:1.6;color:var(--ink-2)}
+.move-warn::before{content:"[ ! ] ";font-weight:700;color:var(--ink)}
+.move-warn b{color:var(--ink);font-weight:700}
 .move-sub{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:22px 0 10px}
 .move-row{display:flex;align-items:center;gap:14px;border:1px solid var(--line);background:var(--bg);padding:13px 16px;margin-bottom:8px}
 .move-name{flex:1;font-size:14px;font-weight:600}
@@ -170,6 +191,8 @@ footer{max-width:740px;margin:48px auto 0;padding:18px 20px 0;border-top:1px sol
     <div class="read" id="read">&mdash;</div>
     <div class="sec-title">Recommendations</div>
     <div id="recs"></div>
+    <div class="sec-title">Leaderboards</div>
+    <div id="boards"></div>
     <div class="sec-title">What's Working &middot; What's Not</div>
     <div class="cols">
       <div class="col win"><h3>Working</h3><ul id="list-win"></ul></div>
@@ -231,12 +254,19 @@ const REC_2026_06_01 = [
     d:'It opens well (30%+) but has only ~130 sends and zero clicks so far. Give it volume before reading anything into it.' }
 ];
 
+
+const REC_2026_06_02 = [
+  { pri:'high', t:'Keep the daily snapshots coming — the trend is the asset',
+    d:'A single 2-day window is too thin to act on alone (92 sends, lots of 1-person emails). The power is in stacking days: after a week of snapshots, the Movement tab will show real direction on opens and clicks rather than noise.' },
+  { pri:'med', t:'Export a consistent window each day',
+    d:'Today\'s export quietly spanned 3 days; I scoped it to Jun 1–2. If you pull the <b>same window each morning</b> (e.g. always \'last 24 hours\'), day-over-day movement becomes clean and the percentages mean exactly what they look like.' },
+  { pri:'watch', t:'Still the same core fix',
+    d:'Nothing in this slice changes the headline from the baseline: opens are fine, clicks are the leak, and the work is the offer/build-up before the CTA — not adding more buttons.' }
+];
 const SNAPSHOTS = [
   {
-    date: "2026-06-01",
-    label: "Jun 1",
-    period: "May 18 – Jun 1",
-    headline: "Opens hold around <b>16%</b>, but only about <b>1% of emails earn a click</b> (62 total). The key context: these emails <b>already carry two CTAs</b> (Join now, and Book a call if they haven't), and the high-clicking Booked Call reminder is simply the <b>link to join a call people already booked</b> — a functional click, not nurture persuasion. So this isn't a missing-button problem. People are opening the nurture emails, seeing both offers, and choosing not to act — which points at the <b>offer and the build-up to it</b>, not the CTA itself.",
+    date: "2026-06-01", label: "Jun 1", period: "May 18 – Jun 1",
+    headline: "Two-week baseline (May 18\u2013Jun 1): <b>6,226 emails</b>, opens around <b>16%</b>, ~1% clicking (62 total). The emails already carry two CTAs (Join now, Book a call), and the high-clicking Booked Call reminder is just the join-your-call link \u2014 functional, not nurture persuasion. People open, see both offers, and mostly don't act: an offer/desire problem, not a missing button.",
     recommendations: REC_2026_06_01,
     sends: [
   {"dt":"2026-05-18","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.3","sent":698,"dlv":695,"op":76,"cl":3,"un":4},
@@ -304,6 +334,12 @@ const SNAPSHOTS = [
   {"dt":"2026-06-01","j":"other","r":"other","camp":"Booked Reactivation Call (tag and email flow)","step":"24 hr before reminder","sent":1,"dlv":1,"op":1,"cl":0,"un":0},
   {"dt":"2026-06-01","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":1,"dlv":1,"op":0,"cl":0,"un":0}
 ]
+  },
+  {
+    date: "2026-06-02", label: "Jun 2", period: "Jun 1 – Jun 2",
+    headline: "A thin 2-day slice (Jun 1\u20132): just <b>92 emails</b> went out, so treat this as a snapshot of recent activity, not a full read \u2014 most individual emails reached only a handful of people. Open rate across the window sits around <b>23%</b>, a touch above baseline, with 1 click. The real value starts now: each day you add stacks the trend, and the Movement tab tracks rates day to day. <i>Note: this 2-day window is much smaller than the 2-week baseline, so compare rates, not totals.</i>",
+    recommendations: REC_2026_06_02,
+    sends: [{"dt":"2026-06-01","j":"15-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":21,"dlv":21,"op":4,"cl":1,"un":0},{"dt":"2026-06-01","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.4","sent":7,"dlv":7,"op":0,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.2","sent":5,"dlv":5,"op":0,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":5,"dlv":5,"op":0,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6","sent":2,"dlv":2,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.3","sent":2,"dlv":2,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.1","sent":2,"dlv":2,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":2,"dlv":2,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"content","r":"content","camp":"WEEK 4: The Door Is Open","step":"Email 4.3","sent":2,"dlv":2,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-01","j":"other","r":"other","camp":"Contact Responds SMS","step":"Email to let them know to respond to sms","sent":2,"dlv":2,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"other","r":"other","camp":"Booked Reactivation Call (tag and email flow)","step":"24 hr before reminder","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.4","sent":31,"dlv":31,"op":2,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"other","camp":"Booked Reactivation Call (tag and email flow)","step":"30 min before reminder","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":1,"dlv":1,"op":0,"cl":0,"un":0}]
   }
 ];
 /* ── ENGINE (do not edit) ── */
@@ -368,6 +404,49 @@ function renderTopMeta(){
   $('ft-gen').textContent = 'LATEST ' + latest.label.toUpperCase() + ' · ' + SNAPSHOTS.length + ' SNAPSHOTS';
 }
 
+// clicks that are the "join/booking/rebook link" — functional, not nurture persuasion
+const isFunctional = (e)=> /booked call|no show|cancellation|rebook|reminder|reactivation/i.test(e.camp);
+
+function renderBoards(EMAILS){
+  const totalCl = EMAILS.reduce((a,e)=>a+e.cl,0);
+  const tag = (e)=> `<span class="jtag">[${jLabel[e.j]}]</span>`;
+
+  // ── Board 1: most clicks ──
+  const clickers = EMAILS.filter(e=>e.cl>0).sort((a,b)=>b.cl-a.cl);
+  const maxCl = clickers.length?clickers[0].cl:1;
+  const fnTotal = clickers.filter(isFunctional).reduce((a,e)=>a+e.cl,0);
+  const realTotal = totalCl - fnTotal;
+  const clickRow = (e,i)=>`<div class="lrow"><div class="lrank">${i+1}</div>
+    <div class="lname">${esc(e.step)} ${tag(e)}${isFunctional(e)?'<span class="tag-fn">join link</span>':'<span class="tag-real">nurture</span>'}<span class="lt">${esc(e.camp)}</span></div>
+    <div class="lbar-wrap"><div class="lbar-track"><div class="lbar-fill ${isFunctional(e)?'alt':''}" style="width:${Math.round(e.cl/maxCl*100)}%"></div></div></div>
+    <div class="lval">${e.cl}<span class="lvs">${p1(e.ctor)} CTOR</span></div></div>`;
+
+  // ── Board 3: top opens (enough volume to be real) ──
+  const REAL = 50;
+  const openers = EMAILS.filter(e=>e.dlv>=REAL).sort((a,b)=>b.openPct-a.openPct).slice(0,8);
+  const maxOpen = openers.length?openers[0].openPct:1;
+  const openRow = (e,i)=>`<div class="lrow"><div class="lrank">${i+1}</div>
+    <div class="lname">${esc(e.step)} ${tag(e)}<span class="lt">${esc(e.camp)} · ${num(e.dlv)} delivered</span></div>
+    <div class="lbar-wrap"><div class="lbar-track"><div class="lbar-fill" style="width:${Math.round(e.openPct/maxOpen*100)}%"></div></div></div>
+    <div class="lval">${p1(e.openPct)}<span class="lvs">open</span></div></div>`;
+
+  let html = '';
+
+  // Q1 + Q2 combined: where the clicks are + what they are
+  html += `<div class="board"><div class="board-h">Where the clicks are — and what they are</div>
+    <div class="board-note">Of <b>${totalCl} total clicks</b>, about <b>${fnTotal}</b> are functional “join your call / rebook” links (marked <span class="tag-fn">join link</span>) and <b>${realTotal}</b> are genuine <span class="tag-real">nurture</span> clicks — someone choosing to act on the email. Only the nurture clicks signal persuasion.</div>`;
+  html += clickers.length ? clickers.slice(0,10).map(clickRow).join('') : '<div class="board-note">No clicks in this window.</div>';
+  html += `</div>`;
+
+  // Q3: top opens
+  html += `<div class="board"><div class="board-h">Top open rates</div>
+    <div class="board-note">Emails with at least ${REAL} delivered, so the rate is real and not a small-sample fluke. This is who's earning attention at the top of the inbox.</div>`;
+  html += openers.length ? openers.map(openRow).join('') : '<div class="board-note">Not enough volume in this window to rank open rates reliably.</div>';
+  html += `</div>`;
+
+  $('boards').innerHTML = html;
+}
+
 function renderSnapshot(snap){
   const t = totals(snap);
   const EMAILS = emailsOf(snap);
@@ -383,6 +462,8 @@ function renderSnapshot(snap){
   $('recs').innerHTML = (snap.recommendations||[]).map(r=>
     `<div class="rec"><span class="rec-pri ${r.pri}">${r.pri==='watch'?'Watch':r.pri==='med'?'Medium':'High'}</span>
       <div class="rec-body"><div class="rec-t">${r.t}</div><div class="rec-d">${r.d}</div></div></div>`).join('');
+
+  renderBoards(EMAILS);
 
   const sig=EMAILS.filter(e=>!e.thin);
   const win=sig.filter(e=>e.cl>0).sort((a,b)=>b.ctor-a.ctor).slice(0,6);
@@ -439,7 +520,14 @@ function renderMovement(){
   const tCur=totals(cur), tPrev=totals(prev);
   const dOpenAll=pc(tCur.op,tCur.dlv)-pc(tPrev.op,tPrev.dlv), dClickAll=tCur.cl-tPrev.cl;
 
-  let html=`<div class="move-banner">Across all sequences, open rate ${dOpenAll>=0?'rose':'fell'} <b>${Math.abs(dOpenAll).toFixed(1)}pts</b> to ${p1(pc(tCur.op,tCur.dlv))} and clicks ${dClickAll>=0?'rose':'fell'} by <b>${Math.abs(dClickAll)}</b>. Of ${movers.length} comparable emails: <b>${up} improved</b>, <b>${down} declined</b>, ${flat} held steady (by open rate).</div>`;
+  let html='';
+  const ratio = (tPrev.sent && tCur.sent) ? Math.max(tCur.sent,tPrev.sent)/Math.min(tCur.sent,tPrev.sent) : 1;
+  if(ratio >= 2){
+    html += `<div class="move-warn">These two windows are very different sizes — <b>${num(tPrev.sent)}</b> sent (${esc(prev.label)}) vs <b>${num(tCur.sent)}</b> sent (${esc(cur.label)}). Raw totals like clicks aren't comparable, so read the <b>rates</b> below, not the counts. Day-over-day comparison gets clean once both windows are the same length.</div>`;
+    html += `<div class="move-banner">By rate: open ${dOpenAll>=0?'rose':'fell'} <b>${Math.abs(dOpenAll).toFixed(1)}pts</b> (${p1(pc(tPrev.op,tPrev.dlv))} → ${p1(pc(tCur.op,tCur.dlv))}). Of ${movers.length} emails sent in both windows: <b>${up} higher open</b>, <b>${down} lower</b>, ${flat} flat.</div>`;
+  } else {
+    html += `<div class="move-banner">Across all sequences, open rate ${dOpenAll>=0?'rose':'fell'} <b>${Math.abs(dOpenAll).toFixed(1)}pts</b> to ${p1(pc(tCur.op,tCur.dlv))} and clicks ${dClickAll>=0?'rose':'fell'} by <b>${Math.abs(dClickAll)}</b>. Of ${movers.length} comparable emails: <b>${up} improved</b>, <b>${down} declined</b>, ${flat} held steady (by open rate).</div>`;
+  }
 
   // flow-level
   html+='<div class="move-sub">By Sequence</div>';
