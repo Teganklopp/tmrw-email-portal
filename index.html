@@ -87,6 +87,8 @@ h1{font-size:25px;font-weight:700;line-height:1.22;letter-spacing:-0.01em;margin
 .col li b{color:var(--ink);font-weight:600}
 .col.win li::before{content:"\2713";position:absolute;left:0;color:var(--ink);font-weight:700}
 .col.bad li::before{content:"!";position:absolute;left:2px;color:var(--ink);font-weight:700}
+.col.watch li::before{content:"\2192";position:absolute;left:0;color:var(--ink-3);font-weight:700}
+.wk-num{font-size:13px;font-weight:700;background:var(--ink);color:var(--bg);padding:4px 9px;white-space:nowrap;flex-shrink:0;margin-top:2px}
 
 .jhead{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--bg);background:var(--ink);padding:11px 16px;margin:30px 0 0;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .jhead .jh-meta{font-size:11px;font-weight:500;letter-spacing:0.06em;color:#bcbcbc}
@@ -207,6 +209,18 @@ footer{max-width:740px;margin:48px auto 0;padding:18px 20px 0;border-top:1px sol
     <div id="movement"></div>
   </div>
 
+  <div id="weekly-view" style="display:none">
+    <div class="sec-title" id="wk-title">Weekly Summary</div>
+    <div class="summary" id="wk-stats"></div>
+    <div class="read" id="wk-intro"></div>
+    <div class="sec-title">Top Findings</div>
+    <div id="wk-findings"></div>
+    <div class="sec-title">Movements This Week</div>
+    <div id="wk-moves"></div>
+    <div class="sec-title">Watch Next Week</div>
+    <div class="col watch"><ul id="wk-watch"></ul></div>
+  </div>
+
 </div>
 <footer><div>TMRW &middot; NURTURE SEQUENCES &middot; <span id="ft-gen">&mdash;</span></div></footer>
 </div><!-- /#app -->
@@ -264,6 +278,56 @@ const REC_2026_06_03 = [
     d:'It logged its first 2 clicks this window after opening well for weeks. Too early to call, but worth watching whether that converts into a real pattern as volume grows.' },
   { pri:'watch', t:'Booking clicks are still the join link',
     d:'Any clicks on the Booked Call / reminder emails are people joining a call they already booked — functional, not persuasion. The Leaderboard separates these from genuine nurture clicks.' }
+];
+
+// ─── WEEKLY SUMMARY · curated each week by Claude from the settled data ───
+const WEEKLY = {
+  title: "Weekly Summary",
+  period: "Week of Jun 1 – 5",
+  intro: "The freshest settled view of the week (GHL keeps filling in recent days, so Jun 4–5 totals will still rise). Just over <b>1,000 emails</b> went out Jun 2–5 at <b>17.7% open</b> with 13 clicks. The story of the week: <b>the 30-minute flow stopped being a question mark</b> — it out-opened the 15-minute flow by 8.5 points at real volume and earned its first genuine nurture clicks.",
+  stats: [
+    { n:"1,045", l:"Sent (Jun 2–5)", d:"still settling upward" },
+    { n:"17.7<sup>%</sup>", l:"Open Rate", d:"184 opens" },
+    { n:"13", l:"Clicks", d:"5 genuine nurture" },
+    { n:"23.1<sup>%</sup>", l:"30-Min Open", d:"vs 14.6% on 15-min" }
+  ],
+  findings: [
+    { t:"The 30-minute flow is real",
+      d:"344 sent at <b>23.1% open vs the 15-minute flow's 14.6%</b> — and it held that lead while volume more than doubled. Better still, its nurture emails 1.1 and 1.2 earned their <b>first genuine clicks</b> (actual persuasion, not join links). The new positioning is earning both attention and action." },
+    { t:"The 1.6 test flipped — don't crown a winner yet",
+      d:"Last week 1.6 A was the only variant clicking. This week <b>1.6 B took 2 clicks</b> (a third of its openers acted) while A went quiet. Samples are still small — give it one more week before promoting either." },
+    { t:"Email 1.7 is a quiet converter",
+      d:"Only <b>9.1% open</b>, but its openers click at <b>17.6%</b> (3 clicks this week, up from ~7% CTOR in the baseline). The body is doing its job; the subject line is the bottleneck. Fix the envelope, not the letter." },
+    { t:"Email 1.8 woke up",
+      d:"<b>21.2% open this week vs ~9% in the baseline</b> (+12pts). If you changed its subject line, it worked — if you didn't, it's worth finding out what shifted." },
+    { t:"Weekly Content went quiet",
+      d:"No WEEK-series sends in this window, after 413 in the baseline period. If that pause was deliberate, fine — if not, the content track has stalled." }
+  ],
+  movements: [
+    { dir:"up", t:"30-min flow: 0 → 5 clicks", d:"2 genuine nurture clicks (1.1, 1.2) + 3 booking-link clicks — its first real engagement" },
+    { dir:"up", t:"Email 1.8 open: ~9% → 21.2%", d:"+12pts vs baseline, 80 delivered" },
+    { dir:"up", t:"Email 1.7 CTOR: ~7% → 17.6%", d:"openers are acting — subject line is what's holding it back" },
+    { dir:"down", t:"30-min open: 30.4% → 23.1%", d:"−7.3pts as volume more than doubled — normal cooling at scale, still 8.5pts ahead of 15-min" },
+    { dir:"flat", t:"15-min open: 15.1% → 14.6%", d:"steady — the established flow is what it is" },
+    { dir:"down", t:"Weekly Content: 413 sends → 0", d:"the content track paused this window" }
+  ],
+  watch: [
+    "Whether the 30-min flow holds 20%+ open as it reaches full volume",
+    "1.6 A vs B — one more week of data, then promote the winner and retire the rest",
+    "Whether 1.8's open-rate jump sticks, and what caused it",
+    "Jun 4–5 numbers settling in the next export — they'll rise"
+  ]
+};
+
+const REC_2026_06_05 = [
+  { pri:'high', t:'Lean into the 30-minute flow',
+    d:'It now out-opens the 15-minute flow by <b>8.5 points at real volume</b> and its nurture emails earn genuine clicks. Shift your testing energy and best offers there — it\'s the horse that\'s running.' },
+  { pri:'med', t:'Rewrite 1.7\'s subject line, keep its body',
+    d:'9.1% open but a <b>17.6% click-through among openers</b> — the people who get in, act. The envelope is the problem, not the letter.' },
+  { pri:'med', t:'Let the 1.6 A/B test run one more week',
+    d:'B just flipped ahead (2 clicks, a third of openers). Small samples both weeks — one more week, then promote the winner and retire C and D, which have earned nothing twice.' },
+  { pri:'watch', t:'Same export discipline as before',
+    d:'Pull the <b>same fixed window with a ~2-day lag</b> each time. Jun 4–5 in this read will keep rising — judge them next pull, not now.' }
 ];
 const SNAPSHOTS = [
   {
@@ -338,10 +402,16 @@ const SNAPSHOTS = [
 ]
   },
   {
-    date: "2026-06-03", label: "Latest · to Jun 3", period: "Jun 1 – Jun 3 · settling",
+    date: "2026-06-03", label: "To Jun 3", period: "Jun 1 – Jun 3 · superseded by later pulls",
     headline: "Latest read, pulled Jun 3 (covers Jun 1\u20133): <b>612 emails, ~21% open, 9 clicks.</b> <i>Heads-up: GHL undercounts the most recent day or two at export time and fills them in later \u2014 so Jun 3 here is still settling and these totals will rise.</i> Treat this as a directional snapshot of recent activity, not a final count. Encouraging sign: the <b>30-minute flow logged its first 2 clicks.</b> It's a much smaller window than the baseline, so the Movement tab reads rates, not totals.",
     recommendations: REC_2026_06_03,
     sends: [{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.5","sent":80,"dlv":80,"op":6,"cl":1,"un":1},{"dt":"2026-06-01","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.1","sent":49,"dlv":49,"op":15,"cl":1,"un":0},{"dt":"2026-06-01","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.3","sent":42,"dlv":42,"op":10,"cl":1,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":39,"dlv":38,"op":9,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 B","sent":38,"dlv":38,"op":5,"cl":2,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 A","sent":38,"dlv":38,"op":6,"cl":0,"un":0},{"dt":"2026-06-01","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.2","sent":36,"dlv":36,"op":7,"cl":0,"un":1},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":29,"dlv":29,"op":7,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.4","sent":23,"dlv":23,"op":5,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.2","sent":17,"dlv":17,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":15,"dlv":15,"op":4,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 D","sent":14,"dlv":14,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 C","sent":13,"dlv":13,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":13,"dlv":13,"op":4,"cl":1,"un":0},{"dt":"2026-06-01","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email 1.1","sent":12,"dlv":12,"op":3,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.3","sent":9,"dlv":9,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email 1.1","sent":8,"dlv":8,"op":5,"cl":0,"un":0},{"dt":"2026-06-01","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.4","sent":6,"dlv":6,"op":0,"cl":0,"un":1},{"dt":"2026-06-01","j":"15-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":6,"dlv":6,"op":2,"cl":0,"un":0},{"dt":"2026-06-01","j":"content","r":"content","camp":"WEEK 4: The Door Is Open","step":"Email 4.3","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-01","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.3","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.4","sent":31,"dlv":31,"op":4,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.4","sent":20,"dlv":20,"op":5,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":17,"dlv":17,"op":6,"cl":3,"un":0},{"dt":"2026-06-02","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":13,"dlv":13,"op":2,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":5,"dlv":5,"op":2,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.3","sent":4,"dlv":4,"op":4,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.1","sent":3,"dlv":3,"op":3,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":3,"dlv":3,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"other","camp":"Contact Responds SMS","step":"Email to let them know to respond to sms","sent":2,"dlv":2,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":2,"dlv":2,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.2","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"other","camp":"Booked Reactivation Call (tag and email flow)","step":"30 min before reminder","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.2","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.2","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"other","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.3","sent":5,"dlv":5,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"30-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":1,"dlv":1,"op":1,"cl":0,"un":1},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":1,"dlv":1,"op":0,"cl":0,"un":0}]
+  },
+  {
+    date: "2026-06-05", label: "Latest · to Jun 5", period: "Jun 2 – Jun 5 · settling",
+    headline: "Freshest read, pulled Jun 5 (covers Jun 2\u20135): <b>1,045 emails, 17.7% open, 13 clicks</b> \u2014 Jun 4\u20135 still settling and will rise. The week's story: the <b>30-minute flow out-opened the 15-minute flow 23.1% vs 14.6%</b> at real volume and earned its first genuine nurture clicks (emails 1.1 and 1.2). The full week's findings and movements are in the <b>Weekly</b> tab.",
+    recommendations: REC_2026_06_05,
+    sends: [{"dt":"2026-06-02","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.2","sent":84,"dlv":83,"op":19,"cl":1,"un":1},{"dt":"2026-06-02","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.1","sent":81,"dlv":80,"op":24,"cl":1,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.5","sent":75,"dlv":75,"op":10,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.3","sent":66,"dlv":66,"op":11,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.4","sent":58,"dlv":58,"op":9,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 A","sent":41,"dlv":41,"op":3,"cl":0,"un":1},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 B","sent":40,"dlv":39,"op":6,"cl":2,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":36,"dlv":35,"op":7,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":23,"dlv":23,"op":5,"cl":0,"un":0},{"dt":"2026-06-02","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email 1.1","sent":19,"dlv":19,"op":5,"cl":1,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 D","sent":19,"dlv":19,"op":3,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6 C","sent":18,"dlv":18,"op":1,"cl":0,"un":1},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":13,"dlv":13,"op":1,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":8,"dlv":8,"op":3,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.3","sent":4,"dlv":4,"op":4,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.1","sent":2,"dlv":2,"op":2,"cl":0,"un":0},{"dt":"2026-06-02","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":72,"dlv":72,"op":7,"cl":1,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":56,"dlv":56,"op":5,"cl":2,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":43,"dlv":43,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":34,"dlv":34,"op":3,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":34,"dlv":34,"op":2,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":28,"dlv":27,"op":4,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.7","sent":25,"dlv":25,"op":2,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.3","sent":20,"dlv":20,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":18,"dlv":18,"op":10,"cl":2,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.9","sent":15,"dlv":15,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":11,"dlv":11,"op":2,"cl":0,"un":0},{"dt":"2026-06-03","j":"30-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email","sent":9,"dlv":9,"op":3,"cl":1,"un":0},{"dt":"2026-06-03","j":"15-min","r":"booked","camp":"Booked Call Flow and reminder","step":"Email 1.1","sent":7,"dlv":7,"op":3,"cl":1,"un":0},{"dt":"2026-06-03","j":"30-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.1","sent":6,"dlv":6,"op":1,"cl":1,"un":0},{"dt":"2026-06-03","j":"15-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":5,"dlv":5,"op":3,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.4","sent":3,"dlv":3,"op":3,"cl":0,"un":0},{"dt":"2026-06-03","j":"other","r":"other","camp":"Contact Responds SMS","step":"Email to let them know to respond to sms","sent":3,"dlv":3,"op":2,"cl":0,"un":0},{"dt":"2026-06-03","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.4","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"30-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.3","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"noshow","camp":"No Show and Rebook","step":"Email 1.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-03","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.8","sent":1,"dlv":1,"op":1,"cl":0,"un":1},{"dt":"2026-06-04","j":"other","r":"other","camp":"VRTUS CUP - Nurture Flow","step":"Email 1.5","sent":31,"dlv":31,"op":5,"cl":0,"un":0},{"dt":"2026-06-04","j":"30-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.5","sent":20,"dlv":20,"op":6,"cl":0,"un":0},{"dt":"2026-06-04","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.3","sent":5,"dlv":5,"op":1,"cl":0,"un":0},{"dt":"2026-06-04","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.2","sent":2,"dlv":2,"op":0,"cl":0,"un":0},{"dt":"2026-06-04","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.2","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-04","j":"15-min","r":"nurture","camp":"Nurture Funnel - FB form","step":"Email 1.6","sent":1,"dlv":1,"op":1,"cl":0,"un":0},{"dt":"2026-06-05","j":"15-min","r":"cancel","camp":"Cancellation to rebook flow","step":"Email","sent":1,"dlv":1,"op":0,"cl":0,"un":0},{"dt":"2026-06-05","j":"15-min","r":"postcall","camp":"Post Call Flow (non converters)","step":"Email 2.3","sent":1,"dlv":1,"op":0,"cl":0,"un":0}]
   }
 ];
 /* ── ENGINE (do not edit) ── */
@@ -385,18 +455,35 @@ let sel = SNAPSHOTS.length - 1; // default newest
 
 function renderTabs(){
   let html = SNAPSHOTS.map((s,i)=>`<button class="tab${(sel===i)?' on':''}" data-i="${i}">${esc(s.label)}</button>`).join('');
-  html += `<button class="tab movement${sel==='move'?' on':''}" data-i="move">Movement</button>`;
+  html += `<button class="tab movement${sel==='week'?' on':''}" data-i="week">Weekly</button>`;
+  html += `<button class="tab${sel==='move'?' on':''}" data-i="move">Movement</button>`;
   $('tabs').innerHTML = html;
   $('tabs').querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
-    const v=b.dataset.i; sel = (v==='move')?'move':+v; render();
+    const v=b.dataset.i; sel = (v==='move'||v==='week')?v:+v; render();
   }));
 }
 function render(){
   renderTabs();
-  const moving = sel==='move';
-  $('snapshot-view').style.display = moving?'none':'block';
-  $('movement-view').style.display = moving?'block':'none';
-  if(moving){ renderMovement(); } else { renderSnapshot(SNAPSHOTS[sel]); }
+  $('snapshot-view').style.display = (typeof sel==='number')?'block':'none';
+  $('movement-view').style.display = (sel==='move')?'block':'none';
+  $('weekly-view').style.display = (sel==='week')?'block':'none';
+  if(sel==='move'){ renderMovement(); }
+  else if(sel==='week'){ renderWeekly(); }
+  else { renderSnapshot(SNAPSHOTS[sel]); }
+}
+
+function renderWeekly(){
+  if(typeof WEEKLY==='undefined'||!WEEKLY){ $('weekly-view').innerHTML='<div class="move-empty">No weekly summary yet.</div>'; return; }
+  $('wk-title').textContent = WEEKLY.title + ' · ' + WEEKLY.period;
+  $('wk-stats').innerHTML = WEEKLY.stats.map(c=>`<div class="stat"><div class="n">${c.n}</div><div class="l">${c.l}</div><div class="d">${c.d}</div></div>`).join('');
+  $('wk-intro').innerHTML = WEEKLY.intro;
+  $('wk-findings').innerHTML = WEEKLY.findings.map((f,i)=>
+    `<div class="rec"><span class="wk-num">${String(i+1).padStart(2,'0')}</span>
+      <div class="rec-body"><div class="rec-t">${f.t}</div><div class="rec-d">${f.d}</div></div></div>`).join('');
+  $('wk-moves').innerHTML = WEEKLY.movements.map(m=>
+    `<div class="move-row"><div class="move-name">${m.t}<span class="ms">${m.d}</span></div>
+      <span class="move-delta ${m.dir}">${m.dir==='up'?'rising':m.dir==='down'?'falling':'steady'}</span></div>`).join('');
+  $('wk-watch').innerHTML = WEEKLY.watch.map(w=>`<li>${w}</li>`).join('');
 }
 
 function renderTopMeta(){
